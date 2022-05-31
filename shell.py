@@ -11,7 +11,7 @@ if __name__ == '__main__':
         response = talker(dialog)
         dialog.append(response)
 
-        print('bot:', response)
+        print('bot: ', response)
         
         query = input('usr: ')
         dialog.append(query)
