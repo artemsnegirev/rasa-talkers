@@ -66,7 +66,6 @@ class ActionBlenderbotTalker(Action):
         ) -> List[Dict[Text, Any]]:
 
         context: List[Text] = get_last_messages(tracker.events)
-        print(context)
         dispatcher.utter_message(talker(context))
 
         return [UserUtteranceReverted()]
