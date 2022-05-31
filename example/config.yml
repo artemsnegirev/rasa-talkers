@@ -1,0 +1,23 @@
+recipe: default.v1
+
+language: en
+
+pipeline:
+  - name: WhitespaceTokenizer
+  - name: LanguageModelFeaturizer
+    model_name: "roberta"
+    model_weights: "distilroberta-base"
+  - name: DIETClassifier
+    epochs: 50
+    drop_rate: 0.4
+    constrain_similarities: true
+  - name: FallbackClassifier
+    threshold: 0.3
+    ambiguity_threshold: 0.1
+
+policies:
+  - name: MemoizationPolicy
+  - name: TEDPolicy
+    max_history: 5
+    epochs: 100
+  - name: RulePolicy

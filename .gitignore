@@ -1,2 +1,6 @@
+.rasa
+
 venv
+models
+
 __pycache__
