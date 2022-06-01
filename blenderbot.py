@@ -1,6 +1,8 @@
 from typing import List, Text
 
 from transformers import (
+    pipeline,
+    Conversation,
     BlenderbotTokenizer as Tokenizer, 
     BlenderbotForConditionalGeneration as Blenderbot
 )
@@ -9,7 +11,7 @@ BLENDERBOT_CONTEXT_LENGTH = 128
 
 
 class Talker:
-    def __init__(self, device='cpu') -> None:
+    def __init__(self, device=-1) -> None:
         self.device = device
         self.__setup_model()
     
@@ -19,54 +21,31 @@ class Talker:
         self.model: Blenderbot = Blenderbot.from_pretrained(name)
         self.tokenizer: Tokenizer = Tokenizer.from_pretrained(name)
 
-        self.model.to(self.device)
+        self.pipeline = pipeline(
+            task="conversational", 
+            device=self.device,
+        )
 
-    def _truncate_to_max_length(self, inputs):
-        tokens = inputs['input_ids'][0]
+    def __call__(self, dialog: List[Text]) -> Text:
+        conversation = Conversation()
 
-        if len(tokens) <= BLENDERBOT_CONTEXT_LENGTH:
-            return inputs
+        for idx, utter in enumerate(dialog):
+            if idx % 2 == 0:
+                conversation.add_user_input(utter)
 
-        idx = BLENDERBOT_CONTEXT_LENGTH
-        truncation_idx = None
-        last_was_separator = False
+                if idx != len(dialog) - 1:
+                    conversation.mark_processed()
+            else:
+                conversation.append_response(utter)
         
-        while idx > 0 and truncation_idx is None: 
-            if tokens[-idx] == 228:
-                last_was_separator = True
-            
-            elif last_was_separator:
-                truncation_idx = idx
+        conversation: Conversation = self.pipeline(
+            conversation,
 
-            idx = idx - 1
+            max_length=BLENDERBOT_CONTEXT_LENGTH,
+            pad_token_id=self.tokenizer.eos_token_id,
+        )
 
-        if truncation_idx is None:
-            truncation_idx = BLENDERBOT_CONTEXT_LENGTH
-
-        inputs['input_ids'] = inputs['input_ids'][..., -truncation_idx:]
-        inputs['attention_mask'] = inputs['attention_mask'][..., -truncation_idx:]
-
-        return inputs 
-
-    def __call__(self, context: List[Text]) -> Text:
-        context = ['    '.join(context)]
-
-        inputs = self.tokenizer(
-            context,
-            padding=True,
-            truncation=True,
-            return_tensors="pt"
-        ).to(self.device)
-
-        inputs = self._truncate_to_max_length(inputs)
-
-        output = self.model.generate(**inputs)
-        output.to('cpu')
-
-        response = self.tokenizer.batch_decode(
-            output, 
-            skip_special_tokens=True
-        )[0]
+        response: Text = conversation.generated_responses[-1]
 
         return self.__remove_extra_spaces(response)
     
