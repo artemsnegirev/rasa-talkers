@@ -1,4 +1,4 @@
-from typing import List, Text
+from typing import Dict, List, Text
 
 from transformers import (
     pipeline,
@@ -40,8 +40,10 @@ def tokenize_conversation(self: Tokenizer, conversation: Conversation) -> List[i
 
 
 class Talker:
-    def __init__(self, device=-1) -> None:
+    def __init__(self, device=-1, generate_kwargs: Dict = {}) -> None:
         self.device = device
+        self.generate_kwargs = generate_kwargs
+
         self.__setup_model()
     
     def __setup_model(self):
@@ -78,6 +80,8 @@ class Talker:
 
             max_length=self.tokenizer.model_max_length,
             pad_token_id=self.tokenizer.eos_token_id,
+
+            **self.generate_kwargs
         )
 
         response: Text = conversation.generated_responses[-1]

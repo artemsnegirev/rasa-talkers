@@ -8,7 +8,13 @@ from rasa.shared.core.constants import ACTION_DEFAULT_FALLBACK_NAME
 
 from blenderbot import Talker
 
-talker = Talker()
+talker = Talker(
+    generate_kwargs={
+        'num_beams': 10,
+        'min_length': 20,
+        'no_repeat_ngram_size': 3,
+    }
+)
 
 def get_last_messages(events: List[Dict]) -> List[Text]:
     """gets conversations til user message before latest fallback
