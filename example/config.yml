@@ -18,6 +18,10 @@ pipeline:
 policies:
   - name: MemoizationPolicy
   - name: TEDPolicy
-    max_history: 5
-    epochs: 100
+    epochs: 25
+    drop_rate_label: 0.4
+    drop_rate_dialogue: 0.4
+    drop_rate_attention: 0.4
+    e2e_confidence_threshold: 0.8
+    constrain_similarities: true
   - name: RulePolicy

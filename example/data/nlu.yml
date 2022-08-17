@@ -89,3 +89,36 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: chitchat
+  examples: |
+    - Can I ask you questions first?
+    - Can you make sandwiches?
+    - Can you please send me an uber
+    - Do I have to accept?
+    - Mail me the guide
+    - The weather is good
+    - What do you prefer?
+    - how do you learn
+    - how it compares to alexa
+    - how long have you been online?
+    - how long will the next version will launch?
+    - so, I'm helping right now to training you?
+    - someone call the police i think the bot died
+    - sorry, i cannot rephrase
+    - sudo make me a sandwich
+    - where is mexico?
+    - wheres the party?
+    - which city are you talking about?
+    - which email
+    - which email should i send to ?
+    - who let the dog out
+    - why do you need that
+    - you already have that
+    - you can learn how to make a coffe
+    - you have children?
+    - you have job opening
+    - you lock sweety
+    - you should learn to count
+    - you will know it from the single red rose it carries between its teeth
+    - you're a woman

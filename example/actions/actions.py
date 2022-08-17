@@ -6,15 +6,8 @@ from rasa_sdk.executor import CollectingDispatcher
 
 from rasa.shared.core.constants import ACTION_DEFAULT_FALLBACK_NAME
 
-from blenderbot import Talker
+from actions.blenderbot import Talker
 
-talker = Talker(
-    generate_kwargs={
-        'num_beams': 10,
-        'min_length': 20,
-        'no_repeat_ngram_size': 3,
-    }
-)
 
 def get_last_messages(events: List[Dict]) -> List[Text]:
     """gets conversations til user message before latest fallback
@@ -60,6 +53,17 @@ def get_last_messages(events: List[Dict]) -> List[Text]:
     return messages
 
 class ActionBlenderbotTalker(Action):
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.talker = Talker(
+            # optional generation options
+            generate_kwargs={
+                'num_beams': 10,
+                'min_length': 20,
+                'no_repeat_ngram_size': 3,
+            }
+        )
 
     def name(self) -> Text:
         return ACTION_DEFAULT_FALLBACK_NAME
@@ -71,7 +75,11 @@ class ActionBlenderbotTalker(Action):
         domain: Dict[Text, Any]
         ) -> List[Dict[Text, Any]]:
 
+        # collect messages between the bot and the user to pass to the model
         context: List[Text] = get_last_messages(tracker.events)
-        dispatcher.utter_message(talker(context))
+        # create a new message based on previous utterances and generate options
+        new_bot_message: Text = self.talker(context)
+        # and finally send message to the user to continue conversation 
+        dispatcher.utter_message(new_bot_message)
 
         return [UserUtteranceReverted()]

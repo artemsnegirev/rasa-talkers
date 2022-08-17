@@ -28,3 +28,27 @@ stories:
   - action: utter_did_that_help
   - intent: deny
   - action: utter_goodbye
+
+- story: e2e example 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - user: I saw this picture before
+  - action: action_default_fallback
+
+- story: e2e example 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - user: i had good meeting with my friends
+  - action: utter_happy
+
+- story: e2e example 3
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - user: I am going to buy new computer this weekend
+  - action: utter_happy
