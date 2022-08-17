@@ -6,7 +6,7 @@ authors = ["artemsnegirev"]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
-rasa = ">=3.0.0"
+rasa = "3.2.5"
 transformers = {extras = ["onnx"], version = "^4.19.2"}
 torch = "^1.11.0"
 
